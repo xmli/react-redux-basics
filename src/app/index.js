@@ -32,18 +32,34 @@ render(<App />, window.document.getElementById('app'));*/
 
 import {createStore} from "redux";
 
-const reducer = (state, action) => {
+const initialState = {
+    result: 1,
+    lastValues: []
+}
+
+//reducers always work with the payloads
+const reducer = (state = initialState, action) => { //default case when no state is sent
     switch (action.type) {
         case "ADD": 
-            state = state + action.payload;
+            state = {
+                ...state, //spread: add all properties and initalize
+                result: state.result + action.payload, //overwrite
+                lastValues: [...state.lastValues, action.payload]
+            }
+                // state.lastValues.push(action.payload);
+                // state.result += action.payload; //bad because we don't have immutable approach
             break;
         case "SUBTRACT":
-            state = state - action.payload;
+            state = {
+                ...state,
+                result: state.result - action.payload,
+                lastValues: [...state.lastValues, action.payload]
+            }
             break;
     }
     return state; //have to return a state
 };
-const store = createStore(reducer, 1);
+const store = createStore(reducer);
 
 store.subscribe(() => {
     console.log("Store udpated!", store.getState())
@@ -51,7 +67,7 @@ store.subscribe(() => {
 
 store.dispatch({
     type: "ADD",
-    payload: 100
+    payload: 100 //payload is the value you want to change
 });
 
 store.dispatch({
