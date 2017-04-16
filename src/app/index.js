@@ -30,15 +30,13 @@ class App extends React.Component {
 
 render(<App />, window.document.getElementById('app'));*/
 
-import {createStore} from "redux";
+import {createStore, combineReducers} from "redux";
 
-const initialState = {
+//reducers should always work with the payloads
+const mathReducer = (state = {
     result: 1,
     lastValues: []
-}
-
-//reducers always work with the payloads
-const reducer = (state = initialState, action) => { //default case when no state is sent
+}, action) => { //default case when no state is sent
     switch (action.type) {
         case "ADD": 
             state = {
@@ -46,8 +44,8 @@ const reducer = (state = initialState, action) => { //default case when no state
                 result: state.result + action.payload, //overwrite
                 lastValues: [...state.lastValues, action.payload]
             }
-                // state.lastValues.push(action.payload);
-                // state.result += action.payload; //bad because we don't have immutable approach
+                /* state.lastValues.push(action.payload);
+                state.result += action.payload; */          //bad bec ause we don't have immutable approach
             break;
         case "SUBTRACT":
             state = {
@@ -59,7 +57,32 @@ const reducer = (state = initialState, action) => { //default case when no state
     }
     return state; //have to return a state
 };
-const store = createStore(reducer);
+
+const userReducer = (state = {
+    name: "Max",
+    age: 27
+}, action) => {
+    switch (action.type) {
+        case "SET_NAME": 
+            state = {
+                ...state,
+                name: action.payload
+            }
+            break;
+        case "SET_AGE":
+            state = {
+                ...state,
+                age: action.payload
+            }
+            break;
+    }
+    return state;
+};
+
+const store = createStore(combineReducers({
+    mathReducer, //mathReducer: mathReducer()
+    userReducer
+}));
 
 store.subscribe(() => {
     console.log("Store udpated!", store.getState())
@@ -78,4 +101,9 @@ store.dispatch({
 store.dispatch({
     type: "SUBTRACT",
     payload: 80
+});
+
+store.dispatch({
+    type: "SET_AGE",
+    payload: 30
 });
