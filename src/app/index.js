@@ -1,37 +1,11 @@
-/*import React from "react";
+import React from "react";
 import {render} from "react-dom";
-
-import { User } from './components/User';
-import { Main } from './components/Main';
-
-class App extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            username: "Max"
-        };
-    }
-
-    changeUsername(newName) {
-        this.setState({
-            username: newName
-        });
-    }
-
-    render() {
-        return (
-            <div className="container">
-                <Main changeUsername={this.changeUsername.bind(this)}/>
-                <User username={this.state.username}/>
-            </div>
-        );
-    }
-}
-
-render(<App />, window.document.getElementById('app'));*/
 
 import {createStore, combineReducers, applyMiddleware} from "redux";
 import {createLogger} from "redux-logger";
+import {Provider} from "react-redux" //provides store for react
+
+import App from "./components/App" //default export
 
 //reducers should always work with the payloads
 const mathReducer = (state = {
@@ -87,12 +61,11 @@ const myLogger = (store) => (next) => (action) => {
 
 const store = createStore(
     combineReducers({
-        mathReducer, //mathReducer: mathReducer()
-        userReducer
+        math: mathReducer,//mathReducer, //mathReducer: mathReducer()
+        user: userReducer//userReducer
     }),
     {},
     applyMiddleware(
-        // myLogger, 
         createLogger()
     )
 );
@@ -101,22 +74,8 @@ store.subscribe(() => {
     // console.log("Store udpated!", store.getState())
 });
 
-store.dispatch({
-    type: "ADD",
-    payload: 100 //payload is the value you want to change
-});
-
-store.dispatch({
-    type: "ADD",
-    payload: 22
-});
-
-store.dispatch({
-    type: "SUBTRACT",
-    payload: 80
-});
-
-store.dispatch({
-    type: "SET_AGE",
-    payload: 30
-});
+render(
+    <Provider store={store}>
+        <App />
+    </Provider>,  //connect store to react
+    window.document.getElementById('app'));
