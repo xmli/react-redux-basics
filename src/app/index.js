@@ -31,6 +31,7 @@ class App extends React.Component {
 render(<App />, window.document.getElementById('app'));*/
 
 import {createStore, combineReducers, applyMiddleware} from "redux";
+import {createLogger} from "redux-logger";
 
 //reducers should always work with the payloads
 const mathReducer = (state = {
@@ -90,11 +91,14 @@ const store = createStore(
         userReducer
     }),
     {},
-    applyMiddleware(myLogger)
+    applyMiddleware(
+        // myLogger, 
+        createLogger()
+    )
 );
 
 store.subscribe(() => {
-    console.log("Store udpated!", store.getState())
+    // console.log("Store udpated!", store.getState())
 });
 
 store.dispatch({
