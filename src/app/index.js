@@ -30,7 +30,7 @@ class App extends React.Component {
 
 render(<App />, window.document.getElementById('app'));*/
 
-import {createStore, combineReducers} from "redux";
+import {createStore, combineReducers, applyMiddleware} from "redux";
 
 //reducers should always work with the payloads
 const mathReducer = (state = {
@@ -79,10 +79,19 @@ const userReducer = (state = {
     return state;
 };
 
-const store = createStore(combineReducers({
-    mathReducer, //mathReducer: mathReducer()
-    userReducer
-}));
+const myLogger = (store) => (next) => (action) => {
+    console.log("Logged Action: ", action);
+    next(action); //must call next to continue the flow to reducers
+};
+
+const store = createStore(
+    combineReducers({
+        mathReducer, //mathReducer: mathReducer()
+        userReducer
+    }),
+    {},
+    applyMiddleware(myLogger)
+);
 
 store.subscribe(() => {
     console.log("Store udpated!", store.getState())
