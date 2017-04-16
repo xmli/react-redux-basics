@@ -5,7 +5,7 @@ import {createStore, combineReducers, applyMiddleware} from "redux";
 import {createLogger} from "redux-logger";
 import {Provider} from "react-redux" //provides store for react
 
-import App from "./components/App" //default export
+import App from "./containers/App" //default export
 
 //reducers should always work with the payloads
 const mathReducer = (state = {
